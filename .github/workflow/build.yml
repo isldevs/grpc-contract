@@ -1,0 +1,29 @@
+name: Build gRPC Contract
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build
+        run: ./gradlew clean build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: grpc-contract
+          path: build/libs/*.jar
