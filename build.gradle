@@ -7,34 +7,41 @@ plugins {
 group = 'com.github.isldevs.grpc'
 version = '1.0.0'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+
 repositories {
     mavenCentral()
 }
 
 ext {
-    grpcVersion = '1.76.0'
+    set('springGrpcVersion', "1.0.3")
     protobufVersion = '4.31.1'
 }
 
 dependencies {
-    api "io.grpc:grpc-stub:${grpcVersion}"
-    api "io.grpc:grpc-protobuf:${grpcVersion}"
-    implementation "io.grpc:grpc-services:${grpcVersion}"
+    api "io.grpc:grpc-stub"
+    api "io.grpc:grpc-protobuf"
+    implementation "io.grpc:grpc-services:${springGrpcVersion}"
 }
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.33.4"
+        artifact = 'com.google.protobuf:protoc'
     }
     plugins {
         grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.76.0"
+            artifact = 'io.grpc:protoc-gen-grpc-java'
         }
     }
     generateProtoTasks {
-        all().configureEach {
-            plugins {
-                grpc {}
+        all()*.plugins {
+            grpc {
+                option '@generated=omit'
             }
         }
     }
