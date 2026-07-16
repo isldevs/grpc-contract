@@ -11,12 +11,15 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    grpcVersion = '1.76.0'
+    protobufVersion = '4.31.1'
+}
+
 dependencies {
-
-    api 'io.grpc:grpc-stub'
-    api 'io.grpc:grpc-protobuf'
-    implementation 'io.grpc:grpc-services'
-
+    api "io.grpc:grpc-stub:${grpcVersion}"
+    api "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-services:${grpcVersion}"
 }
 
 protobuf {
