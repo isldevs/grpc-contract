@@ -1,11 +1,11 @@
 plugins {
     id 'java-library'
-    id 'com.google.protobuf' version '0.9.5'
     id 'maven-publish'
+    id 'com.google.protobuf' version '0.9.5'
 }
 
-group = 'com.github.isldevs.grpc'
-version = '1.0.0'
+group = project.findProperty("group")
+version = project.findProperty("version")
 
 java {
     toolchain {
@@ -13,44 +13,49 @@ java {
     }
 }
 
-
 repositories {
     mavenCentral()
 }
 
-ext {
-    set('springGrpcVersion', "1.0.3")
-    protobufVersion = '4.31.1'
-}
-
 dependencies {
-    api "io.grpc:grpc-stub"
-    api "io.grpc:grpc-protobuf"
-    implementation "io.grpc:grpc-services:${springGrpcVersion}"
+
+    api "io.grpc:grpc-stub:${grpcVersion}"
+    api "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-services:${grpcVersion}"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc'
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java'
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
         }
     }
+
     generateProtoTasks {
-        all()*.plugins {
-            grpc {
-                option '@generated=omit'
+        all().configureEach {
+            plugins {
+                grpc {}
             }
         }
     }
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            groupId = group
+            artifactId = "grpc-contract"
+            version = version
         }
     }
 }
